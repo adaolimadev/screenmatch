@@ -1,6 +1,8 @@
 package br.com.alura.screenmatch;
 
+import br.com.alura.screenmatch.model.DadosEpisodio;
 import br.com.alura.screenmatch.model.DadosSerie;
+import br.com.alura.screenmatch.model.DadosTemporada;
 import br.com.alura.screenmatch.service.ConsumoApi;
 import br.com.alura.screenmatch.service.ConvertDados;
 import org.springframework.boot.CommandLineRunner;
@@ -18,11 +20,32 @@ public class ScreenmatchApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		var consumoApi = new ConsumoApi();
 
-		var json = consumoApi.obterDados("https://www.omdbapi.com/?t=gilmore+girls&apikey=c64822c4");
-		System.out.println(json);
+		//System.out.println("Todas as infos da Serie: ");
+		//System.out.println(json);
 
+		String nomeSerie = "stranger+things";
+		String apiKey = "c64822c4";
+		var json = consumoApi.obterDados("https://www.omdbapi.com/?t="+nomeSerie+"&apikey="+apiKey);
 		ConvertDados conversor = new ConvertDados();
-		DadosSerie dados = conversor.obterDados(json, DadosSerie.class);
-		System.out.println(dados);
+
+		System.out.print("Dados da serie: ");
+		DadosSerie dadosSerie = conversor.obterDados(json, DadosSerie.class);
+		System.out.println(dadosSerie);
+		System.out.println("---------------------------------------------------------------------------------------------------------------------");
+
+		DadosEpisodio dadosEpisodio;
+
+		for (int i = 1; i <= dadosSerie.totalTemporadas() ; i++) {
+			System.out.println("TEMPORADA: "+i);
+			json = consumoApi.obterDados("https://www.omdbapi.com/?t="+nomeSerie+"&Season="+i+"&apikey="+apiKey);
+			DadosTemporada dadosTemporada = conversor.obterDados(json, DadosTemporada.class);
+			for (int j = 0; j <= dadosTemporada.episodios().size(); j++) {
+				json  = consumoApi.obterDados("https://www.omdbapi.com/?t="+nomeSerie+"&Season="+i+"&episode="+j+"&apikey="+apiKey);
+				System.out.println("Infomações do episódio: "+j);
+				dadosEpisodio = conversor.obterDados(json, DadosEpisodio.class);
+				System.out.println(dadosEpisodio);
+			}
+
+		}
 	}
 }
