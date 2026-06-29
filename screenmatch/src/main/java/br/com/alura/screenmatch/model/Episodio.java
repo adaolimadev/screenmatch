@@ -19,16 +19,16 @@ public class Episodio {
 
         try{
             this.avaliacao = Double.valueOf(dadosEpisodio.avaliacao());
-        }catch (NumberFormatException ex){
+        } catch (NumberFormatException ex){
             this.avaliacao = 0.0;
         }
 
-    try {
-        this.dataLancamento = LocalDate.parse(dadosEpisodio.dataLancamento());
+        try {
+            this.dataLancamento = LocalDate.parse(dadosEpisodio.dataLancamento());
 
-    } catch (DateTimeException ex) {
-       this.dataLancamento = null;
-    }
+        } catch (DateTimeException ex) {
+            this.dataLancamento = null;
+        }
     }
 
     public Integer getTemporada() {
